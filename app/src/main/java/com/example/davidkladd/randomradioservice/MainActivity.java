@@ -15,7 +15,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
-    Button buttstart, buttstop, buttplay, buttpause;
+    Button buttstart, buttstop, buttgong, buttpause;
     TextView textView;
     final String TAG = "Dave";
 
@@ -63,11 +63,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        buttplay = findViewById(R.id.buttplay);
-        buttplay.setOnClickListener(new View.OnClickListener() {
+        buttgong = findViewById(R.id.buttgong);
+        buttgong.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MyService.playMusic("abba");
+                Log.d(TAG, "onClick: gongged");
+                MyService.ChooseNewSong();
             }
         });
         buttpause = findViewById(R.id.buttpause);

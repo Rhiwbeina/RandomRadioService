@@ -39,11 +39,11 @@
         tools:layout_editor_absoluteX="16dp">
 
         <Button
-            android:id="@+id/buttplay"
+            android:id="@+id/buttgong"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Play" />
+            android:text="Gong" />
 
         <Button
             android:id="@+id/buttpause"

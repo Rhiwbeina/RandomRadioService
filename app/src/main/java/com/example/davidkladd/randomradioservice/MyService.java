@@ -29,6 +29,7 @@ import android.os.Looper;
 import android.os.Parcel;
 import android.os.RemoteException;
 import android.os.UserHandle;
+import android.speech.tts.TextToSpeech;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -47,6 +48,8 @@ public class MyService extends Service {
     static  MediaPlayer mp;
     public static Handler mHandler;
     public static Context mContext;
+    static DavesTTS TTS;
+    static DavesSpeechComposer dsc;
 
 public static void setContext(Context ctx){
     mContext = ctx;
@@ -56,7 +59,14 @@ public static void setContext(Context ctx){
         Log.d(TAG, "MyService: ");
         mp = new MediaPlayer();
         mHandler = new Handler();
+        TTS = new DavesTTS(mContext, new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                Log.d(TAG, "onInit: Text to Speech ready i guess");
+            }
+        }, mHandler);
         //mContext = this.getApplicationContext();
+        dsc = new DavesSpeechComposer(mContext);
     }
 
     public static void ChooseNewSong(){
@@ -68,21 +78,26 @@ public static void setContext(Context ctx){
     public static void songChoosen( Bundle songBundle){
     // called when the RunnableMediaFinder finishes
         Log.d(TAG, "songChoosen: done");
+        String speech = dsc.getSentence(songBundle);
+        if (mp.isPlaying()){
+            //mp.setVolume(0.03f, 0.03f );
+        }
+        TTS.sayIt(speech, songBundle);
         //songBundle.getString("data");
-        playMusic(songBundle.getString("data"));
+        //playMusic(songBundle);
     }
 
- public static void playMusic(String pathToSong) {
+ public static void playMusic(Bundle songBundle) {
      Log.d("Dave", "playMusic: ");
      killPlayer();
      try {
-         mp.setDataSource(pathToSong);
+         mp.setDataSource(songBundle.getString("data"));
          //mp.setDataSource("/storage/sdcard/Music/01-What's the Matter Here_.mp3");
          mp.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
              @Override
              public void onPrepared(MediaPlayer mp) {
                  Log.d("Dave", "onPrepared: " + mp.getCurrentPosition());
-                 //mp.isPlaying();
+                 mp.setVolume(1.0f, 1.0f);
                  mp.start();
              }
          });
