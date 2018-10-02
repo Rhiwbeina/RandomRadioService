@@ -5,6 +5,7 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -18,6 +19,7 @@ public class MainActivity extends AppCompatActivity {
     Button buttstart, buttstop, buttgong, buttpause;
     TextView textView;
     final String TAG = "Dave";
+    Handler maHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +81,21 @@ public class MainActivity extends AppCompatActivity {
                 MyService.pauseMusic();
             }
         });
+
+        maHandler = new Handler();
+        Runnable rr = new Runnable()
+        {
+            public void run()
+            {
+                Log.d(TAG, "runnable: post calling donespeaking");
+                if (MyService.mp.isPlaying()){
+                    textView.setText(String.valueOf(MyService.mp.getCurrentPosition()));
+                }
+
+                maHandler.postDelayed(this, 1000);
+            }
+        };
+        maHandler.postDelayed(rr, 500);
 
     }
 

@@ -67,6 +67,8 @@ public static void setContext(Context ctx){
         }, mHandler);
         //mContext = this.getApplicationContext();
         dsc = new DavesSpeechComposer(mContext);
+
+
     }
 
     public static void ChooseNewSong(){
@@ -98,6 +100,7 @@ public static void setContext(Context ctx){
              public void onPrepared(MediaPlayer mp) {
                  Log.d("Dave", "onPrepared: " + mp.getCurrentPosition());
                  mp.setVolume(1.0f, 1.0f);
+                 mp.seekTo(700);
                  mp.start();
              }
          });
