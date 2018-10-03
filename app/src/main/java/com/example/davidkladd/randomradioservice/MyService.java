@@ -50,6 +50,7 @@ public class MyService extends Service {
     public static Context mContext;
     static DavesTTS TTS;
     static DavesSpeechComposer dsc;
+    public static boolean songDueToEnd;
 
 public static void setContext(Context ctx){
     mContext = ctx;
@@ -65,10 +66,22 @@ public static void setContext(Context ctx){
                 Log.d(TAG, "onInit: Text to Speech ready i guess");
             }
         }, mHandler);
-        //mContext = this.getApplicationContext();
+
         dsc = new DavesSpeechComposer(mContext);
-
-
+        songDueToEnd = false;
+        Runnable rr = new Runnable(){
+            public void run(){
+                if (MyService.mp.isPlaying() && !songDueToEnd){
+                    if (mp.getDuration() - mp.getCurrentPosition() < 150000){
+                        songDueToEnd = true;
+                        ChooseNewSong();
+                        Log.d(TAG, "Song due to end");
+                    }
+                }
+                mHandler.postDelayed(this, 1000);
+            }
+        };
+        mHandler.postDelayed(rr, 500);
     }
 
     public static void ChooseNewSong(){
@@ -81,12 +94,7 @@ public static void setContext(Context ctx){
     // called when the RunnableMediaFinder finishes
         Log.d(TAG, "songChoosen: done");
         String speech = dsc.getSentence(songBundle);
-        if (mp.isPlaying()){
-            //mp.setVolume(0.03f, 0.03f );
-        }
         TTS.sayIt(speech, songBundle);
-        //songBundle.getString("data");
-        //playMusic(songBundle);
     }
 
  public static void playMusic(Bundle songBundle) {
@@ -102,6 +110,7 @@ public static void setContext(Context ctx){
                  mp.setVolume(1.0f, 1.0f);
                  mp.seekTo(700);
                  mp.start();
+                 songDueToEnd = false;
              }
          });
          mp.prepareAsync();

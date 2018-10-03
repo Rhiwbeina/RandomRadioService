@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
                 maHandler.postDelayed(this, 1000);
             }
         };
-        maHandler.postDelayed(rr, 500);
+        //maHandler.postDelayed(rr, 500);
 
     }
 
