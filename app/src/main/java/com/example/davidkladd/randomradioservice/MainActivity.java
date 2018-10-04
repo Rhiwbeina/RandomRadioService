@@ -5,7 +5,10 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -16,10 +19,11 @@ import android.widget.Button;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
-    Button buttstart, buttstop, buttgong, buttpause;
-    TextView textView;
+    Button buttquit, buttgong, buttpause;
+    TextView textView, textViewSongCount;
     final String TAG = "Dave";
     Handler maHandler;
+    Intent myIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,29 +43,22 @@ public class MainActivity extends AppCompatActivity {
             textView.setText("Service Already Running");
         } else {
             textView.setText("Starting Service");
-            Intent myIntent = new Intent(getApplicationContext(), MyService.class);
+            myIntent = new Intent(getApplicationContext(), MyService.class);
             startService(myIntent);
             MyService.setContext(getApplicationContext());
         }
 
-        buttstart = findViewById(R.id.buttstart);
-        buttstart.setOnClickListener(new View.OnClickListener() {
+        textViewSongCount = findViewById(R.id.textViewSongCount);
+        textViewSongCount.setText("Songs found in library " + getLibraryCount());
+
+        buttquit = findViewById(R.id.buttquit);
+        buttquit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG, "onClick: choosin song with media finder " );
-                MyService.ChooseNewSong();
-
-            }
-        });
-        
-        buttstop = findViewById(R.id.buttstop);
-        buttstop.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "onClick: stop");
-                int ttt = MyService.getPos();
-                textView.setText(String.valueOf(ttt));
-
+                stopService(new Intent(getApplicationContext(), MyService.class));
+                Log.d(TAG, "onClick: stopping service");
+                finishAffinity();
+                System.exit(0);
             }
         });
 
@@ -81,22 +78,15 @@ public class MainActivity extends AppCompatActivity {
                 MyService.pauseMusic();
             }
         });
-
+// update text display regularly with announcement text
         maHandler = new Handler();
-        Runnable rr = new Runnable()
-        {
-            public void run()
-            {
-                Log.d(TAG, "runnable: post calling donespeaking");
-                if (MyService.mp.isPlaying()){
-                    textView.setText(String.valueOf(MyService.mp.getCurrentPosition()));
-                }
-
+        Runnable rr = new Runnable(){
+            public void run(){
+                textView.setText(MyService.Anno);
                 maHandler.postDelayed(this, 1000);
             }
         };
-        //maHandler.postDelayed(rr, 500);
-
+        maHandler.postDelayed(rr, 500);
     }
 
     private boolean isMyServiceRunning(Class<?> serviceClass) {
@@ -108,4 +98,34 @@ public class MainActivity extends AppCompatActivity {
         }
         return false;
     }
+
+    public String getLibraryCount() {
+        Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+
+        String[] columns = {MediaStore.Audio.Media.TITLE,
+                MediaStore.Audio.Media.ARTIST,
+                MediaStore.Audio.Media.ALBUM,
+                MediaStore.Audio.Media.YEAR,
+                MediaStore.Audio.Media.DURATION,
+                MediaStore.Audio.Media.DATA
+        };
+
+        String libraryCount = "";
+        String[] searchy = {"%" + "" + "%", "30000"};
+        try {
+            Cursor cursor = getContentResolver().query(uri, columns,  MediaStore.Audio.Media.TITLE + " LIKE ? AND duration > ?" , searchy, null);
+
+            assert cursor != null;
+            libraryCount = String.valueOf(cursor.getCount());
+            Log.d(TAG, "onCreate: Library count = " + String.valueOf(cursor.getCount()));
+            cursor.close();
+            //textViewLibraryCount.setText("Soungs found in library: " + String.valueOf(cursor.getCount()) );
+        }
+        catch( Exception eee){
+            Log.d(TAG, "onCreate: error " + eee);
+            libraryCount = "error";
+        }
+        return libraryCount;
+    }
+
 }

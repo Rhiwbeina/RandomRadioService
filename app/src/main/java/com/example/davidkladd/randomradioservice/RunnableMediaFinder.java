@@ -5,8 +5,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
-
-import static com.example.davidkladd.randomradioservice.MyService.playMusic;
 import static com.example.davidkladd.randomradioservice.MyService.songChoosen;
 
 public class RunnableMediaFinder implements Runnable{

@@ -1,6 +1,5 @@
 package com.example.davidkladd.randomradioservice;
 
-import android.app.Service;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
@@ -31,21 +30,6 @@ public class DavesTTS extends TextToSpeech {
             public void onDone(final String utteranceId) {
                 Log.d(TAG, "TTS done");
                 MyService.playMusic(songBundle);
-                //mainActivity.doneSpeaking(utteranceId, songBundle);
-
-                Runnable rr = new Runnable()
-                {
-                    public void run()
-                    {
-                        Log.d(TAG, "runnable: post calling donespeaking");
-                        //mainActivity.doneSpeaking(utteranceId, songBundle);
-                        //mmHandler.postDelayed(this, 1000);
-                    }
-                };
-
-               // mmHandler.postDelayed(rr, 1);
-                //mainActivity.mainHandler.postDelayed(rr, 10);
-
             }
 
             @Override
