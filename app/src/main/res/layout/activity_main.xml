@@ -11,8 +11,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="85dp">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <Button
             android:id="@+id/buttgong"
@@ -35,8 +36,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
-        tools:layout_editor_absoluteX="16dp">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout">
 
         <Button
             android:id="@+id/buttpause"
