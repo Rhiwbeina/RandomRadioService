@@ -81,7 +81,7 @@ public static void setContext(Context ctx){
              public void onPrepared(MediaPlayer mp) {
                  Log.d("Dave", "onPrepared: " + mp.getCurrentPosition());
                  mp.setVolume(1.0f, 1.0f);
-                 mp.seekTo(700);
+                 mp.seekTo(70);
                  mp.start();
                  songDueToEnd = false;
              }

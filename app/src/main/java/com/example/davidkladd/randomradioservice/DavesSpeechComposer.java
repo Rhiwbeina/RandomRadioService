@@ -46,12 +46,14 @@ public class DavesSpeechComposer {
             intros.add("Now. From the [year] album, [album]. [artist], with. [title] ");
             intros.add("What were you doing back in [year]? Here's [artist]");
             intros.add("[title].");
+            intros.add("Next up, [title]");
 
             outros.add("Awesome to hear [artist] again.");
             outros.add("Wow, that takes me back. [year] to be precise.");
             outros.add("The awesome, [title].");
-            outros.add(" cool! ");
-            outros.add("From the seminal, [album], album.");
+            outros.add(" very cool! ");
+            outros.add(" a classic there by [artist]. ");
+            outros.add("From the seminal, [album] album.");
 
             shpedit.putInt("sentanceCount", intros.size());
             shpedit.putStringSet("intros", intros);
@@ -148,22 +150,23 @@ public class DavesSpeechComposer {
     public String getTimeCheck() {
         List<String> timeCheckList = new ArrayList<String>();
         timeCheckList.add("'Time for a time check. its 'EEEE h m a'.'");
-        timeCheckList.add("'Looking at the studio clock I see its 'h m a '.'");
-        timeCheckList.add(" h m '.' ");
+        timeCheckList.add("'Looking at the studio clock I see its 'h mm a '.'");
+        timeCheckList.add(" h mm '.' ");
         timeCheckList.add("MMMM ' Already !'");
         timeCheckList.add(" EEEE 'for crying out loud! ' ");
 
         Calendar cal = Calendar.getInstance();
         Date currentDate = cal.getTime();
 
-        DateFormat dtestf = new SimpleDateFormat("H");
+        DateFormat dtestf = new SimpleDateFormat("HH");
         String dtest = dtestf.format(currentDate);
         int tod = Integer.valueOf(dtest);
         String period = "";
-        if (tod > 0 && tod < 6 )period = " 'early morning' ";
+        if (tod < 6 )period = " 'early morning' ";
         if (tod > 5 && tod < 12) period = " 'morning' ";
         if (tod > 11 && tod < 18) period = " 'afternoon' ";
         if (tod > 17 && tod < 24) period = " 'evening' ";
+        Log.d(TAG, "getTimeCheck: period=" + String.valueOf(tod));
         timeCheckList.add("'hope your' " + period + "'is going well.'");
         timeCheckList.add("'rocking your' EEEE " + period + "'.'");
         timeCheckList.add("'Playing some chillaxing music this' " + period + "'.'");
